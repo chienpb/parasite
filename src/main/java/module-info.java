@@ -1,8 +1,8 @@
-module com.example.parasite {
+module client {
     requires javafx.controls;
     requires javafx.fxml;
 
 
-    opens com.example.parasite to javafx.fxml;
-    exports com.example.parasite;
+    opens client to javafx.fxml;
+    exports client;
 }
