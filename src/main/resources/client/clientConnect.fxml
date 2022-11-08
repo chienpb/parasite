@@ -4,10 +4,9 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 
-
 <AnchorPane prefHeight="83.0" prefWidth="220.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.ClientController">
    <children>
-      <TextField layoutX="14.0" layoutY="42.0" prefHeight="25.0" prefWidth="122.0" />
+      <TextField id="textBox1" fx:id="textBox1" layoutX="14.0" layoutY="42.0" prefHeight="25.0" prefWidth="122.0" />
       <Button layoutX="146.0" layoutY="42.0" mnemonicParsing="false" onAction="#test" text="Connect" />
    </children>
 </AnchorPane>
