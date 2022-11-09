@@ -45,4 +45,14 @@ public class ClientController {
         dout.write(1);
         dout.flush();
     }
+    public void clickedShutdown(ActionEvent event) throws IOException
+    {
+        dout.write(2);
+        dout.flush();
+    }
+    public void clickedImage(ActionEvent event) throws IOException
+    {
+        dout.write(3);
+        dout.flush();
+    }
 }

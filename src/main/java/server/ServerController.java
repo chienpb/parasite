@@ -1,6 +1,12 @@
 package server;
 
 import javafx.event.ActionEvent;
+import javafx.scene.robot.Robot;
+import javafx.scene.shape.Rectangle;
+import javax.imageio.ImageIO;
+import java.awt.*;
+import java.awt.Toolkit;
+import java.awt.image.BufferedImage;
 
 import java.io.*;
 import java.net.ServerSocket;
@@ -40,5 +46,27 @@ public class ServerController {
             if (line == null) { break; }
             System.out.println(line);
         }
+    }
+    public void getShutdown() {
+        ProcessBuilder processBuilder = new ProcessBuilder();
+        try {
+            processBuilder.command("cmd", "/c" ,"shutdown -s");
+            Process process = processBuilder.start();
+            process.waitFor();
+            if(process.exitValue()==0){
+                System.out.println("Shut down");}
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+    }
+    public void getImage() throws  Exception {
+        Robot robot = new Robot();
+//        Rectangle rect = new Rectangle(Toolkit.getDefaultToolkit().getScreenSize());
+//        BufferedImage image = robot.createScreenCapture(rect);
+//        ImageIO.write(image, "jpg", new File("C:\\Users\\Admin\\Pictures\\out.jpg"));
+        System.out.println("Captured");
+
     }
 }
