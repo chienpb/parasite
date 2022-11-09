@@ -14,8 +14,8 @@ public class Client extends Application {
     @Override
     public void start(Stage stage)  {
         try {
-            FXMLLoader fxmlLoader = new FXMLLoader(Client.class.getResource("clientConnect.fxml"));
-            Scene scene = new Scene(fxmlLoader.load(),200,100);
+            FXMLLoader fxmlLoader = new FXMLLoader(Client.class.getResource("clientMenu.fxml"));
+            Scene scene = new Scene(fxmlLoader.load());
             stage.setScene(scene);
             stage.show();
         }

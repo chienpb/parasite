@@ -14,7 +14,7 @@ public class Server extends Application {
     @Override
     public void start(Stage stage) throws Exception {
         FXMLLoader fxmlLoader = new FXMLLoader(Server.class.getResource("serverConnect.fxml"));
-        Scene scene = new Scene(fxmlLoader.load(),200,100);
+        Scene scene = new Scene(fxmlLoader.load());
         stage.setScene(scene);
         stage.show();
     }
