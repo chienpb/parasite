@@ -9,16 +9,16 @@
 
 <AnchorPane prefHeight="56.0" prefWidth="478.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.ClientController">
    <children>
-      <VBox prefHeight="311.0" prefWidth="126.0">
+      <VBox prefHeight="300.0" prefWidth="120.0">
          <children>
-            <Button mnemonicParsing="false" prefHeight="52.0" prefWidth="126.0" text="Processes" />
-            <Button mnemonicParsing="false" prefHeight="59.0" prefWidth="127.0" text="System" />
-            <Button mnemonicParsing="false" onAction="#clickedKeylogger" prefHeight="62.0" prefWidth="128.0" text="Keylogger" />
-            <Button mnemonicParsing="false" prefHeight="69.0" prefWidth="126.0" text="Screenshot" />
-            <Button mnemonicParsing="false" prefHeight="67.0" prefWidth="126.0" text="abc" />
+            <Button mnemonicParsing="false" prefHeight="60.0" prefWidth="120.0" text="Processes" />
+            <Button fx:id="btnSystem" mnemonicParsing="false" onAction="#clickedSystem" prefHeight="60.0" prefWidth="120.0" text="System" />
+            <Button mnemonicParsing="false" onAction="#clickedKeylogger" prefHeight="60.0" prefWidth="120.0" text="Keylogger" />
+            <Button mnemonicParsing="false" prefHeight="60.0" prefWidth="120.0" text="Screenshot" />
+            <Button mnemonicParsing="false" prefHeight="60.0" prefWidth="120.0" text="abc" />
          </children>
       </VBox>
-      <Pane fx:id="paneMain" layoutX="126.0" prefHeight="311.0" prefWidth="511.0">
+      <Pane fx:id="paneMain" layoutX="126.0" prefHeight="300.0" prefWidth="500.0">
          <children>
             <Button fx:id="btnConnect" layoutX="311.0" layoutY="143.0" mnemonicParsing="false" onAction="#connect" prefHeight="25.0" prefWidth="89.0" text="Connect" />
             <TextField fx:id="textBox1" layoutX="114.0" layoutY="144.0" />

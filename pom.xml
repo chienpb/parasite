@@ -38,6 +38,11 @@
             <version>${junit.version}</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>com.opencsv</groupId>
+            <artifactId>opencsv</artifactId>
+            <version>5.7.1</version>
+        </dependency>
     </dependencies>
 
     <build>
@@ -49,6 +54,13 @@
                 <configuration>
                     <source>19</source>
                     <target>19</target>
+                    <annotationProcessorPaths>
+                        <annotationProcessorPath>
+                            <groupId>org.sample</groupId>
+                            <artifactId>sample-annotation-processor</artifactId>
+                            <version>1.2.3</version>
+                        </annotationProcessorPath>
+                    </annotationProcessorPaths>
                 </configuration>
             </plugin>
             <plugin>
