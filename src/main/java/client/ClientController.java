@@ -1,39 +1,70 @@
 package client;
 
+import javafx.beans.property.SimpleStringProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
+import javafx.fxml.Initializable;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
 import java.io.*;
 import java.net.Socket;
-import java.util.Optional;
+import java.net.URL;
+import java.util.Objects;
+import java.util.ResourceBundle;
+
 import com.opencsv.CSVReader;
 import com.opencsv.exceptions.CsvValidationException;
 
-public class ClientController {
-
+public class ClientController implements Initializable {
     @FXML
     private TextField textBox1;
-
-    private Stage stage;
-    private Scene scene;
 
     @FXML
     private Pane paneMain;
 
-    private BufferedReader br;
+    private Stage stage;
+    private Scene scene;
 
-    private BufferedWriter bw;
+    private Pane paneProcess;
+    private Pane paneSystem;
+
+    public BufferedReader br;
+
+    public BufferedWriter bw;
 
     private Socket s;
     private int connected = 0;
-    public void connect(ActionEvent event) throws IOException
+
+    private ObservableList<Process> processList = FXCollections.observableArrayList();
+
+    private FXMLLoader loaderProcess = new FXMLLoader(ClientController.class.getResource("clientProcess.fxml"));
+    private FXMLLoader loaderSystem = new FXMLLoader(ClientController.class.getResource("clientSystem.fxml"));
+    private ClientProcessController clientProcessController;
+    private ClientSystemController clientSystemController;
+
+    @Override
+    public void initialize(URL location, ResourceBundle resources)
+    {
+        try {
+            paneSystem = loaderSystem.load();
+            paneProcess = loaderProcess.load();
+            clientProcessController = loaderProcess.getController();
+            clientSystemController = loaderSystem.getController();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        clientSystemController.clientController = this;
+    }
+    public void connect() throws IOException
     {
         String ip = textBox1.getText();
         s = new Socket(ip, 3333);
@@ -44,38 +75,49 @@ public class ClientController {
 
     }
 
-    public void clickedSystem(ActionEvent event) throws IOException
+    public void clickedSystem() throws IOException
     {
         if (connected == 1) {
-            Pane pane = new FXMLLoader(ClientController.class.getResource("clientSystem.fxml")).load();
             paneMain.getChildren().clear();
-            paneMain.getChildren().add(pane);
+            paneMain.getChildren().add(paneSystem);
         }
     }
-    public void clickedKeylogger(ActionEvent event) throws IOException
-    {
+    public void clickedProcess(ActionEvent event) throws IOException, CsvValidationException {
+        if (connected == 1) {
+            Pane pane = new FXMLLoader(ClientController.class.getResource("clientProcess.fxml")).load();
+            paneMain.getChildren().clear();
+            paneMain.getChildren().add(paneProcess);
+        }
         bw.write(1);
         bw.flush();
-        String line;
-        while ((line = br.readLine()) != null)
+        String[] val;
+        CSVReader csvReader = new CSVReader(br);
+        while (true)
         {
-            System.out.println(line);
+            val = csvReader.readNext();
+            Process process = new Process(val[0], val[1], val[2], val[3], val[4]);
+            if (Objects.equals(val[0], "stop")) {
+                break;
+            }
+            processList.add(process);
         }
+        clientProcessController.setData(processList);
     }
-    public void clickedShutdown(ActionEvent event) throws IOException
+    public void clickedImage(ActionEvent event) throws IOException
+    {
+        bw.write(4);
+        bw.flush();
+    }
+
+    public void clickedShutdown() throws IOException
     {
         bw.write(2);
         bw.flush();
     }
 
-    public void clickedLogout(ActionEvent event) throws IOException
+    public void clickedLogout() throws IOException
     {
         bw.write(3);
-        bw.flush();
-    }
-    public void clickedImage(ActionEvent event) throws IOException
-    {
-        bw.write(4);
         bw.flush();
     }
 }

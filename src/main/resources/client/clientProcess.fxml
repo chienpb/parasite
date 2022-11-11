@@ -4,17 +4,15 @@
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.layout.AnchorPane?>
 
-
-<AnchorPane prefHeight="300.0" prefWidth="500.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.ClientController">
+<AnchorPane prefHeight="300.0" prefWidth="500.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.ClientProcessController">
    <children>
-      <TableView layoutY="50.0" prefHeight="251.0" prefWidth="500.0">
-        <columns>
-          <TableColumn prefWidth="75.0" text="Name" />
-          <TableColumn prefWidth="46.666656494140625" text="ID" />
-            <TableColumn prefWidth="138.0" text="Session Name" />
-            <TableColumn prefWidth="108.66668701171875" text="Session" />
-            <TableColumn prefWidth="98.66668701171875" text="Mem Usage" />
-        </columns>
-      </TableView>
+      <TableView fx:id="tblSession" layoutY="50.0" prefHeight="251.0" prefWidth="500.0">
+         <columns>
+            <TableColumn fx:id="colName" prefWidth="122.0" text="Name" />
+            <TableColumn fx:id="colId" prefWidth="56.0" text="ID" />
+            <TableColumn fx:id="colSessionName" prefWidth="100.00006103515625" text="Session Name" />
+            <TableColumn fx:id="colSession" prefWidth="121.33331298828125" text="Session" />
+            <TableColumn fx:id="colMemUsage" prefWidth="99.33331298828125" text="MemUsage" />
+         </columns></TableView>
    </children>
 </AnchorPane>

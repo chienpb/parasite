@@ -52,30 +52,37 @@ public class ServerController {
         Process p = builder.start();
         BufferedReader r = new BufferedReader(new InputStreamReader(p.getInputStream()));
         String line;
+        int cnt = 0;
         while (true) {
             line = r.readLine();
             if (line == null) {
                 break;
             }
+            ++cnt;
             bw.write(line);
             bw.newLine();
             bw.flush();
         }
+        String zz = "\"stop\", \"pls\", \"pls\", \"pls\", \"pls\"";
+        bw.write(zz);
+        bw.newLine();
+        bw.flush();
 
     }
     public void shutdown() {
-        ProcessBuilder processBuilder = new ProcessBuilder();
-        try {
-            processBuilder.command("cmd", "/c" ,"shutdown -s");
-            Process process = processBuilder.start();
-            process.waitFor();
-            if(process.exitValue()==0){
-                System.out.println("Shut down");}
-        }
-        catch (Exception e)
-        {
-            e.printStackTrace();
-        }
+//        ProcessBuilder processBuilder = new ProcessBuilder();
+//        try {
+//            processBuilder.command("cmd", "/c" ,"shutdown -s");
+//            Process process = processBuilder.start();
+//            process.waitFor();
+//            if(process.exitValue()==0){
+//                System.out.println("Shut down");}
+//        }
+//        catch (Exception e)
+//        {
+//            e.printStackTrace();
+//        }
+        System.out.println("yespapi");
     }
 
     public void logout() throws Exception
