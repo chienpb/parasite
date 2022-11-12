@@ -1,34 +1,36 @@
 package server;
 
 import javafx.event.ActionEvent;
-import javafx.scene.robot.Robot;
-import javafx.scene.shape.Rectangle;
+
 import javax.imageio.ImageIO;
 import java.awt.*;
-import java.awt.Toolkit;
+import java.awt.Robot;
 import java.awt.image.BufferedImage;
 
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.nio.ByteBuffer;
+
 public class ServerController {
 
     private BufferedReader br;
 
     private BufferedWriter bw;
 
-    private InputStreamReader inputStreamReader;
-    public void openPort(ActionEvent event) throws IOException
-    {
+    private OutputStream outputStream;
+
+    private Socket s;
+
+    public void openPort() throws IOException, AWTException {
         ServerSocket ss = new ServerSocket(3333);
-        Socket s = ss.accept();
+        s = ss.accept();
+        outputStream = s.getOutputStream();
         br = new BufferedReader(new InputStreamReader(s.getInputStream()));
         bw = new BufferedWriter(new OutputStreamWriter(s.getOutputStream()));
         int mode = Integer.parseInt(br.readLine());
-        while (mode != -1)
-        {
-            switch (mode)
-            {
+        while (mode != -1) {
+            switch (mode) {
                 case 1:
                     getRunningProcesses();
                     break;
@@ -38,6 +40,9 @@ public class ServerController {
                     break;
                 case 3:
                     System.out.println(2);
+                    break;
+                case 4:
+                    getImage();
                     break;
                 case 5:
                     String zs = br.readLine();
@@ -50,8 +55,8 @@ public class ServerController {
         s.close();
         ss.close();
     }
-    public void getRunningProcesses() throws IOException
-    {
+
+    public void getRunningProcesses() throws IOException {
         ProcessBuilder builder = new ProcessBuilder("tasklist.exe", "/fo", "csv", "/nh");
         builder.redirectErrorStream(true);
         Process p = builder.start();
@@ -74,6 +79,7 @@ public class ServerController {
         bw.flush();
 
     }
+
     public void shutdown() {
 //        ProcessBuilder processBuilder = new ProcessBuilder();
 //        try {
@@ -90,29 +96,38 @@ public class ServerController {
         System.out.println("yespapi");
     }
 
-    public void logout() throws Exception
-    {
+    public void logout() throws Exception {
         ProcessBuilder processBuilder = new ProcessBuilder();
-        processBuilder.command("cmd", "/c" ,"shutdown -l");
+        processBuilder.command("cmd", "/c", "shutdown -l");
         Process process = processBuilder.start();
         process.waitFor();
-        if(process.exitValue()==0){
-            System.out.println("Shut down");}
+        if (process.exitValue() == 0) {
+            System.out.println("Shut down");
+        }
     }
-    public void getImage() throws  Exception {
+
+    public void getImage() throws IOException, AWTException {
         Robot robot = new Robot();
-//        Rectangle rect = new Rectangle(Toolkit.getDefaultToolkit().getScreenSize());
-//        BufferedImage image = robot.createScreenCapture(rect);
-//        ImageIO.write(image, "jpg", new File("C:\\Users\\Admin\\Pictures\\out.jpg"));
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        BufferedImage bimg;
+        bimg = robot.createScreenCapture(new Rectangle(0, 0, 1920, 1080));
+        ImageIO.write(bimg, "jpg", byteArrayOutputStream);
+        byte[] size = ByteBuffer.allocate(4).putInt(byteArrayOutputStream.size()).array();
+        outputStream.write(size);
+        outputStream.write(byteArrayOutputStream.toByteArray());
+        outputStream.flush();
         System.out.println("Captured");
-
     }
 
-    public void kill(String id) throws IOException
-    {
+    public void kill(String id) throws IOException {
         System.out.println(id);
         ProcessBuilder processBuilder = new ProcessBuilder();
-        processBuilder.command("taskkill","/F","/PID",id);
+        processBuilder.command("taskkill", "/F", "/PID", id);
         processBuilder.start();
+    }
+
+    public void startProcess(String id)
+    {
+
     }
 }

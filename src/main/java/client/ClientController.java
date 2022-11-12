@@ -37,19 +37,25 @@ public class ClientController implements Initializable {
     private Pane paneProcess;
     private Pane paneSystem;
 
+    private Pane paneScreenshot;
+
     public BufferedReader br;
 
     public BufferedWriter bw;
 
-    private Socket s;
+    public Socket s;
     private int connected = 0;
 
     private ObservableList<Process> processList = FXCollections.observableArrayList();
 
     private FXMLLoader loaderProcess = new FXMLLoader(ClientController.class.getResource("clientProcess.fxml"));
     private FXMLLoader loaderSystem = new FXMLLoader(ClientController.class.getResource("clientSystem.fxml"));
+
+    private FXMLLoader loaderScreenshot = new FXMLLoader(ClientController.class.getResource("clientScreenshot.fxml"));
     private ClientProcessController clientProcessController;
     private ClientSystemController clientSystemController;
+
+    private ClientScreenshotController clientScreenshotController;
 
     @Override
     public void initialize(URL location, ResourceBundle resources)
@@ -57,13 +63,16 @@ public class ClientController implements Initializable {
         try {
             paneSystem = loaderSystem.load();
             paneProcess = loaderProcess.load();
+            paneScreenshot = loaderScreenshot.load();
             clientProcessController = loaderProcess.getController();
             clientSystemController = loaderSystem.getController();
+            clientScreenshotController = loaderScreenshot.getController();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
         clientSystemController.clientController = this;
         clientProcessController.clientController = this;
+        clientScreenshotController.clientController = this;
     }
     public void connect() throws IOException
     {
@@ -75,7 +84,12 @@ public class ClientController implements Initializable {
         paneMain.getChildren().clear();
 
     }
-
+    public void writeData(String s) throws IOException
+    {
+        bw.write(s);
+        bw.newLine();
+        bw.flush();
+    }
     public void clickedSystem() throws IOException
     {
         if (connected == 1) {
@@ -89,9 +103,7 @@ public class ClientController implements Initializable {
             paneMain.getChildren().clear();
             paneMain.getChildren().add(paneProcess);
         }
-        bw.write("1");
-        bw.newLine();
-        bw.flush();
+        writeData("1");
         String[] val;
         CSVReader csvReader = new CSVReader(br);
         while (true)
@@ -105,35 +117,25 @@ public class ClientController implements Initializable {
         }
         clientProcessController.setData(processList);
     }
-    public void clickedImage(ActionEvent event) throws IOException
+    public void clickedScreenshot(ActionEvent event) throws IOException
     {
-        bw.write("4");
-        bw.newLine();
-        bw.flush();
+        paneMain.getChildren().clear();
+        paneMain.getChildren().add(paneScreenshot);
     }
 
     public void clickedShutdown() throws IOException
     {
-        bw.write("2");
-        bw.newLine();
-        bw.flush();
+        writeData("2");
     }
 
     public void clickedLogout() throws IOException
     {
-        bw.write("3");
-        bw.newLine();
-        bw.flush();
+        writeData("3");
     }
 
     public void killProcess(String id) throws IOException
     {
-        bw.write("5");
-        bw.newLine();
-        bw.flush();
-        bw.write(id);
-        bw.newLine();
-        bw.flush();
-        System.out.println(id);
+        writeData("5");
+        writeData(id);
     }
 }

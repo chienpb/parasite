@@ -14,7 +14,7 @@
             <Button mnemonicParsing="false" onAction="#clickedProcess" prefHeight="80.0" prefWidth="120.0" text="Processes" />
             <Button fx:id="btnSystem" mnemonicParsing="false" onAction="#clickedSystem" prefHeight="80.0" prefWidth="120.0" text="System" />
             <Button mnemonicParsing="false" prefHeight="80.0" prefWidth="120.0" text="Keylogger" />
-            <Button mnemonicParsing="false" prefHeight="80.0" prefWidth="120.0" text="Screenshot" />
+            <Button mnemonicParsing="false" onAction="#clickedScreenshot" prefHeight="80.0" prefWidth="120.0" text="Screenshot" />
             <Button mnemonicParsing="false" prefHeight="80.0" prefWidth="120.0" text="abc" />
          </children>
       </VBox>
