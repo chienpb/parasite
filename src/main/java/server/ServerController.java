@@ -16,13 +16,15 @@ public class ServerController {
     private BufferedReader br;
 
     private BufferedWriter bw;
-    public void openPort(ActionEvent event) throws Exception
+
+    private InputStreamReader inputStreamReader;
+    public void openPort(ActionEvent event) throws IOException
     {
         ServerSocket ss = new ServerSocket(3333);
         Socket s = ss.accept();
         br = new BufferedReader(new InputStreamReader(s.getInputStream()));
         bw = new BufferedWriter(new OutputStreamWriter(s.getOutputStream()));
-        int mode = br.read();
+        int mode = Integer.parseInt(br.readLine());
         while (mode != -1)
         {
             switch (mode)
@@ -34,12 +36,15 @@ public class ServerController {
                     //shutdown();
                     System.out.println(1);
                     break;
-                case 3: {
+                case 3:
                     System.out.println(2);
                     break;
-                }
+                case 5:
+                    String zs = br.readLine();
+                    kill(zs);
+                    break;
             }
-            mode = br.read();
+            mode = Integer.parseInt(br.readLine());
         }
         br.close();
         s.close();
@@ -101,5 +106,13 @@ public class ServerController {
 //        ImageIO.write(image, "jpg", new File("C:\\Users\\Admin\\Pictures\\out.jpg"));
         System.out.println("Captured");
 
+    }
+
+    public void kill(String id) throws IOException
+    {
+        System.out.println(id);
+        ProcessBuilder processBuilder = new ProcessBuilder();
+        processBuilder.command("taskkill","/F","/PID",id);
+        processBuilder.start();
     }
 }

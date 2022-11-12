@@ -8,6 +8,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -48,6 +49,13 @@ public class ClientProcessController implements Initializable {
     {
         processList = processList0;
         tblSession.setItems(processList);
+    }
+
+    public void kill() throws IOException
+    {
+        Process selected = tblSession.getSelectionModel().getSelectedItem();
+        clientController.killProcess(selected.getId());
+        processList.remove(selected);
     }
 
 }

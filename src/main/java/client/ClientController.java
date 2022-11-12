@@ -63,6 +63,7 @@ public class ClientController implements Initializable {
             throw new RuntimeException(e);
         }
         clientSystemController.clientController = this;
+        clientProcessController.clientController = this;
     }
     public void connect() throws IOException
     {
@@ -88,7 +89,8 @@ public class ClientController implements Initializable {
             paneMain.getChildren().clear();
             paneMain.getChildren().add(paneProcess);
         }
-        bw.write(1);
+        bw.write("1");
+        bw.newLine();
         bw.flush();
         String[] val;
         CSVReader csvReader = new CSVReader(br);
@@ -105,19 +107,33 @@ public class ClientController implements Initializable {
     }
     public void clickedImage(ActionEvent event) throws IOException
     {
-        bw.write(4);
+        bw.write("4");
+        bw.newLine();
         bw.flush();
     }
 
     public void clickedShutdown() throws IOException
     {
-        bw.write(2);
+        bw.write("2");
+        bw.newLine();
         bw.flush();
     }
 
     public void clickedLogout() throws IOException
     {
-        bw.write(3);
+        bw.write("3");
+        bw.newLine();
         bw.flush();
+    }
+
+    public void killProcess(String id) throws IOException
+    {
+        bw.write("5");
+        bw.newLine();
+        bw.flush();
+        bw.write(id);
+        bw.newLine();
+        bw.flush();
+        System.out.println(id);
     }
 }
