@@ -1,7 +1,5 @@
 package server;
 
-import javafx.event.ActionEvent;
-
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.Robot;
@@ -14,40 +12,30 @@ import java.nio.ByteBuffer;
 
 public class ServerController {
 
-    private BufferedReader br;
-
     private BufferedWriter bw;
 
     private OutputStream outputStream;
 
-    private Socket s;
-
-    public void openPort() throws IOException, AWTException {
+    public void openPort() throws IOException, AWTException, InterruptedException {
         ServerSocket ss = new ServerSocket(3333);
-        s = ss.accept();
+        Socket s = ss.accept();
         outputStream = s.getOutputStream();
-        br = new BufferedReader(new InputStreamReader(s.getInputStream()));
+        BufferedReader br = new BufferedReader(new InputStreamReader(s.getInputStream()));
         bw = new BufferedWriter(new OutputStreamWriter(s.getOutputStream()));
         int mode = Integer.parseInt(br.readLine());
         while (mode != -1) {
             switch (mode) {
-                case 1:
-                    getRunningProcesses();
-                    break;
-                case 2:
+                case 1 -> getRunningProcesses();
+                case 2 ->
                     //shutdown();
-                    System.out.println(1);
-                    break;
-                case 3:
-                    System.out.println(2);
-                    break;
-                case 4:
-                    getImage();
-                    break;
-                case 5:
+                        System.out.println(1);
+                case 3 -> System.out.println(2);
+                case 4 -> getImage();
+                case 5 -> {
                     String zs = br.readLine();
                     kill(zs);
-                    break;
+                }
+                case 6 -> getRunningApplication();
             }
             mode = Integer.parseInt(br.readLine());
         }
@@ -62,13 +50,11 @@ public class ServerController {
         Process p = builder.start();
         BufferedReader r = new BufferedReader(new InputStreamReader(p.getInputStream()));
         String line;
-        int cnt = 0;
         while (true) {
             line = r.readLine();
             if (line == null) {
                 break;
             }
-            ++cnt;
             bw.write(line);
             bw.newLine();
             bw.flush();
@@ -77,23 +63,42 @@ public class ServerController {
         bw.write(zz);
         bw.newLine();
         bw.flush();
+    }
 
+    public void getRunningApplication() throws IOException {
+        String cmd = "powershell Get-Process | Where-Object { $_.MainWindowTitle } | Select-Object -Property Name, Id, Mainwindowtitle | Export-Csv -path .\\app.csv -NoTypeInformation ; Get-Content -path .\\app.csv";
+        Process p = Runtime.getRuntime().exec(cmd);
+        BufferedReader r = new BufferedReader(new InputStreamReader(p.getInputStream()));
+        String line;
+        r.readLine();
+        while (true) {
+            line = r.readLine();
+            if (line == null) {
+                break;
+            }
+            bw.write(line);
+            bw.newLine();
+            bw.flush();
+        }
+        String zz = "\"stop\", \"pls\", \"pls\"";
+        bw.write(zz);
+        bw.newLine();
+        bw.flush();
     }
 
     public void shutdown() {
-//        ProcessBuilder processBuilder = new ProcessBuilder();
-//        try {
-//            processBuilder.command("cmd", "/c" ,"shutdown -s");
-//            Process process = processBuilder.start();
-//            process.waitFor();
-//            if(process.exitValue()==0){
-//                System.out.println("Shut down");}
-//        }
-//        catch (Exception e)
-//        {
-//            e.printStackTrace();
-//        }
-        System.out.println("yespapi");
+        ProcessBuilder processBuilder = new ProcessBuilder();
+        try {
+            processBuilder.command("cmd", "/c" ,"shutdown -s");
+            Process process = processBuilder.start();
+            process.waitFor();
+            if(process.exitValue()==0){
+                System.out.println("Shut down");}
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
     }
 
     public void logout() throws Exception {
@@ -110,7 +115,8 @@ public class ServerController {
         Robot robot = new Robot();
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         BufferedImage bimg;
-        bimg = robot.createScreenCapture(new Rectangle(0, 0, 1920, 1080));
+        Rectangle rect = new Rectangle(Toolkit.getDefaultToolkit().getScreenSize());
+        bimg = robot.createScreenCapture(rect);
         ImageIO.write(bimg, "jpg", byteArrayOutputStream);
         byte[] size = ByteBuffer.allocate(4).putInt(byteArrayOutputStream.size()).array();
         outputStream.write(size);

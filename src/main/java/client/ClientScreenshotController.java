@@ -20,6 +20,8 @@ public class ClientScreenshotController {
     @FXML
     private ImageView imageView;
 
+    private BufferedImage img;
+
     private static Image convertToFxImage(BufferedImage image) {
         WritableImage wr = null;
         if (image != null) {
@@ -35,7 +37,7 @@ public class ClientScreenshotController {
         return new ImageView(wr).getImage();
     }
 
-    public void captureImage() throws IOException, InterruptedException {
+    public void captureImage() throws IOException {
         clientController.writeData("4");
         byte[] sizeAr = new byte[4];
         InputStream inputStream = clientController.s.getInputStream();
@@ -43,10 +45,15 @@ public class ClientScreenshotController {
         int size = ByteBuffer.wrap(sizeAr).asIntBuffer().get();
         byte[] imageAr = new byte[size];
         inputStream.read(imageAr);
-
         System.out.println('d');
-        BufferedImage img = ImageIO.read(new ByteArrayInputStream(imageAr));
-        System.out.println('a');
+        img = ImageIO.read(new ByteArrayInputStream(imageAr));
+        File outfile = new File("image.jpg");
+        ImageIO.write(img, "jpg", outfile);
         imageView.setImage(convertToFxImage(img));
+    }
+
+    public void copyToClipboard()
+    {
+        CopyImagetoClipBoard copyImagetoClipBoard = new CopyImagetoClipBoard(img);
     }
 }

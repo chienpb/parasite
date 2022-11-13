@@ -1,27 +1,16 @@
 package client;
 
-import javafx.beans.property.SimpleStringProperty;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Scene;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
-import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.Pane;
-import javafx.stage.Stage;
 
 import java.io.*;
 import java.net.Socket;
 import java.net.URL;
-import java.util.Objects;
 import java.util.ResourceBundle;
 
-import com.opencsv.CSVReader;
 import com.opencsv.exceptions.CsvValidationException;
 
 public class ClientController implements Initializable {
@@ -30,10 +19,6 @@ public class ClientController implements Initializable {
 
     @FXML
     private Pane paneMain;
-
-    private Stage stage;
-    private Scene scene;
-
     private Pane paneProcess;
     private Pane paneSystem;
 
@@ -46,12 +31,10 @@ public class ClientController implements Initializable {
     public Socket s;
     private int connected = 0;
 
-    private ObservableList<Process> processList = FXCollections.observableArrayList();
+    private final FXMLLoader loaderProcess = new FXMLLoader(ClientController.class.getResource("clientProcess.fxml"));
+    private final FXMLLoader loaderSystem = new FXMLLoader(ClientController.class.getResource("clientSystem.fxml"));
 
-    private FXMLLoader loaderProcess = new FXMLLoader(ClientController.class.getResource("clientProcess.fxml"));
-    private FXMLLoader loaderSystem = new FXMLLoader(ClientController.class.getResource("clientSystem.fxml"));
-
-    private FXMLLoader loaderScreenshot = new FXMLLoader(ClientController.class.getResource("clientScreenshot.fxml"));
+    private final FXMLLoader loaderScreenshot = new FXMLLoader(ClientController.class.getResource("clientScreenshot.fxml"));
     private ClientProcessController clientProcessController;
     private ClientSystemController clientSystemController;
 
@@ -90,34 +73,21 @@ public class ClientController implements Initializable {
         bw.newLine();
         bw.flush();
     }
-    public void clickedSystem() throws IOException
-    {
-        if (connected == 1) {
-            paneMain.getChildren().clear();
-            paneMain.getChildren().add(paneSystem);
-        }
+    public void clickedSystem() {
+        if (connected == 0)
+            return;
+        paneMain.getChildren().clear();
+        paneMain.getChildren().add(paneSystem);
     }
-    public void clickedProcess(ActionEvent event) throws IOException, CsvValidationException {
-        if (connected == 1) {
-            Pane pane = new FXMLLoader(ClientController.class.getResource("clientProcess.fxml")).load();
-            paneMain.getChildren().clear();
-            paneMain.getChildren().add(paneProcess);
-        }
-        writeData("1");
-        String[] val;
-        CSVReader csvReader = new CSVReader(br);
-        while (true)
-        {
-            val = csvReader.readNext();
-            Process process = new Process(val[0], val[1], val[2], val[3], val[4]);
-            if (Objects.equals(val[0], "stop")) {
-                break;
-            }
-            processList.add(process);
-        }
-        clientProcessController.setData(processList);
+
+    public void clickedProcess() throws CsvValidationException, IOException {
+        if (connected == 0)
+            return;
+        paneMain.getChildren().clear();
+        paneMain.getChildren().add(paneProcess);
+        clientProcessController.getRunningProcess();
     }
-    public void clickedScreenshot(ActionEvent event) throws IOException
+    public void clickedScreenshot()
     {
         paneMain.getChildren().clear();
         paneMain.getChildren().add(paneScreenshot);

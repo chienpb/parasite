@@ -7,7 +7,8 @@
 
 <AnchorPane prefHeight="300.0" prefWidth="500.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.ClientScreenshotController">
    <children>
-      <Button layoutX="14.0" layoutY="133.0" mnemonicParsing="false" onAction="#captureImage" text="Button" />
-      <ImageView fx:id="imageView" fitHeight="267.0" fitWidth="394.0" layoutX="84.0" layoutY="12.0" pickOnBounds="true" preserveRatio="true" />
+      <Button layoutX="105.0" layoutY="21.0" mnemonicParsing="false" onAction="#captureImage" text="Capture" />
+      <ImageView fx:id="imageView" fitHeight="216.0" fitWidth="384.0" layoutX="58.0" layoutY="70.0" pickOnBounds="true" preserveRatio="true" />
+      <Button layoutX="345.0" layoutY="21.0" mnemonicParsing="false" onAction="#copyToClipboard" text="Copy" />
    </children>
 </AnchorPane>
