@@ -17,9 +17,9 @@
             <TableColumn fx:id="colSession" prefWidth="121.33331298828125" text="Session" />
             <TableColumn fx:id="colMemUsage" prefWidth="99.33331298828125" text="MemUsage" />
          </columns></TableView>
-      <TextField fx:id="txtProcess" layoutX="353.0" layoutY="14.0" prefHeight="25.0" prefWidth="125.0" promptText="App to start" />
-      <Button layoutX="353.0" layoutY="44.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="125.0" text="Start" />
-      <Button layoutX="250.0" layoutY="14.0" mnemonicParsing="false" onAction="#kill" prefHeight="56.0" prefWidth="83.0" text="Kill selected process" textAlignment="CENTER" wrapText="true" />
+      <TextField fx:id="txtName" layoutX="353.0" layoutY="14.0" prefHeight="25.0" prefWidth="125.0" promptText="App/file to start" />
+      <Button layoutX="353.0" layoutY="44.0" mnemonicParsing="false" onAction="#start" prefHeight="25.0" prefWidth="125.0" text="Start" />
+      <Button layoutX="250.0" layoutY="14.0" mnemonicParsing="false" onAction="#kill" prefHeight="56.0" prefWidth="83.0" text="Kill selected process/app" textAlignment="CENTER" wrapText="true" />
       <ToggleButton layoutX="14.0" layoutY="14.0" mnemonicParsing="false" onAction="#getRunningProcess" prefHeight="56.0" prefWidth="97.0" text="Show running processes" textAlignment="CENTER" wrapText="true" />
       <ToggleButton layoutX="129.0" layoutY="14.0" mnemonicParsing="false" onAction="#getRunningApplication" prefHeight="56.0" prefWidth="97.0" text="Show running applications" textAlignment="CENTER" wrapText="true" />
       <TableView fx:id="tblApplication" layoutY="87.0" prefHeight="313.0" prefWidth="500.0" visible="false">

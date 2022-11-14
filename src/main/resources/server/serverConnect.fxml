@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane prefHeight="62.0" prefWidth="143.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="server.ServerController">
+<AnchorPane prefHeight="125.0" prefWidth="174.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="server.ServerController">
    <children>
-      <Button fx:id="button" layoutX="36.0" layoutY="18.0" mnemonicParsing="false" onAction="#openPort" text="Open port" />
+      <Button fx:id="button" layoutX="51.0" layoutY="68.0" mnemonicParsing="false" onAction="#openPort" text="Open port" />
+      <Label fx:id="lbl" layoutX="11.0" layoutY="33.0" prefHeight="20.0" prefWidth="151.0" />
    </children>
 </AnchorPane>

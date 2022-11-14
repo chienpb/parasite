@@ -3,6 +3,7 @@ module client {
     requires javafx.fxml;
     requires java.desktop;
     requires opencsv;
+    requires com.github.kwhat.jnativehook;
 
 
     opens client to javafx.fxml;
