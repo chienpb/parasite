@@ -4,11 +4,10 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 
-
-<AnchorPane prefHeight="300.0" prefWidth="500.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.ClientScreenshotController">
+<AnchorPane prefHeight="400.0" prefWidth="500.0" style="-fx-background-color: #8fb9a8;" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.ClientScreenshotController">
    <children>
-      <Button layoutX="105.0" layoutY="21.0" mnemonicParsing="false" onAction="#captureImage" text="Capture" />
-      <ImageView fx:id="imageView" fitHeight="216.0" fitWidth="384.0" layoutX="58.0" layoutY="70.0" pickOnBounds="true" preserveRatio="true" />
-      <Button layoutX="345.0" layoutY="21.0" mnemonicParsing="false" onAction="#copyToClipboard" text="Copy" />
+      <Button layoutX="81.0" layoutY="21.0" mnemonicParsing="false" onAction="#captureImage" prefHeight="45.0" prefWidth="73.0" style="-fx-background-color: #f8c291;" text="Capture" />
+      <ImageView fx:id="imageView" fitHeight="261.0" fitWidth="464.0" layoutX="18.0" layoutY="104.0" pickOnBounds="true" preserveRatio="true" />
+      <Button layoutX="344.0" layoutY="21.0" mnemonicParsing="false" onAction="#copyToClipboard" prefHeight="45.0" prefWidth="73.0" style="-fx-background-color: #f8c291;" text="Copy" />
    </children>
 </AnchorPane>

