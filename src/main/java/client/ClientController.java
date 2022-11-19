@@ -1,13 +1,10 @@
 package client;
 
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
-import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 
 import java.io.*;
@@ -103,7 +100,7 @@ public class ClientController implements Initializable {
     {
         JOptionPane.showMessageDialog(null, message);
     }
-    public void clickedSystem() {
+    public void clickedSystem() throws IOException, InterruptedException {
         if (connected == 0) {
             infoBox("Not connected to server");
             return;
@@ -112,11 +109,12 @@ public class ClientController implements Initializable {
         btnKeylogger.setStyle("-fx-background-color: #fefad4");
         btnScreenshot.setStyle("-fx-background-color: #fefad4");
         btnProcess.setStyle("-fx-background-color: #fefad4");
+        clientKeyloggerController.stop();
         paneMain.getChildren().clear();
         paneMain.getChildren().add(paneSystem);
     }
 
-    public void clickedProcess() throws CsvValidationException, IOException {
+    public void clickedProcess() throws CsvValidationException, IOException, InterruptedException {
         if (connected == 0)
         {
             infoBox("Not connected to server");
@@ -126,12 +124,12 @@ public class ClientController implements Initializable {
         btnKeylogger.setStyle("-fx-background-color: #fefad4");
         btnScreenshot.setStyle("-fx-background-color: #fefad4");
         btnSystem.setStyle("-fx-background-color: #fefad4");
+        clientKeyloggerController.stop();
         paneMain.getChildren().clear();
         paneMain.getChildren().add(paneProcess);
         clientProcessController.getRunningProcess();
     }
-    public void clickedScreenshot()
-    {
+    public void clickedScreenshot() throws IOException, InterruptedException {
         if (connected == 0)
         {
             infoBox("Not connected to server");
@@ -141,6 +139,7 @@ public class ClientController implements Initializable {
         btnKeylogger.setStyle("-fx-background-color: #fefad4");
         btnSystem.setStyle("-fx-background-color: #fefad4");
         btnProcess.setStyle("-fx-background-color: #fefad4");
+        clientKeyloggerController.stop();
         paneMain.getChildren().clear();
         paneMain.getChildren().add(paneScreenshot);
     }
@@ -193,7 +192,7 @@ public class ClientController implements Initializable {
         writeData("7");
         writeData(name);
     }
-    public void closeServer() throws IOException {
+    public void closeServer() throws IOException, InterruptedException {
         clientKeyloggerController.stop();
         try {
             writeData("10");

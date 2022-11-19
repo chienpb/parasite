@@ -13,6 +13,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
+import java.util.Arrays;
 
 public class ClientScreenshotController {
 
@@ -37,15 +38,14 @@ public class ClientScreenshotController {
         return new ImageView(wr).getImage();
     }
 
-    public void captureImage() throws IOException {
+    public void captureImage() throws IOException, InterruptedException {
         clientController.writeData("4");
         byte[] sizeAr = new byte[4];
         InputStream inputStream = clientController.s.getInputStream();
         inputStream.read(sizeAr);
         int size = ByteBuffer.wrap(sizeAr).asIntBuffer().get();
-        byte[] imageAr = new byte[size];
+        byte[] imageAr = new byte[size];Thread.sleep(200);
         inputStream.read(imageAr);
-        System.out.println('d');
         img = ImageIO.read(new ByteArrayInputStream(imageAr));
         File outfile = new File("image.jpg");
         ImageIO.write(img, "jpg", outfile);
