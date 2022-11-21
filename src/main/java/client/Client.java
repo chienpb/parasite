@@ -5,10 +5,6 @@ import javafx.application.Platform;
 import javafx.stage.Stage;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
-import javafx.stage.StageStyle;
-
-import java.io.IOException;
-
 public class Client extends Application {
 
     public static void main(String[] args) {
